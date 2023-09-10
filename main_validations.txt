@@ -1,0 +1,13 @@
+1.
+There must be:
+ 1)single battleship (size of 4 cells)
+ 2)2 cruisers (size 3)
+ 3)3 destroyers (size 2)
+ 4)4 submarines (size 1)
+Any additional ships are not allowed, as well as missing ships.
+
+2.
+Each ship must be a straight line, except for submarines, which are just single cell.
+
+3.
+The ship cannot overlap or be in contact with any other ship, neither by edge nor by corner
