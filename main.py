@@ -9,12 +9,22 @@ def validate_battlefield(field: list):
     :return boolean value:
     """
 
+    ship_length = {4: "single", 3: "cruiser", 2: "destroyer", 1: "submarine"}
     requirement_ships = {"submarine": 4, "destroyer": 3, "cruiser": 2, "single": 1}
     ship_size_counter = 0
     added_coordinates = set()
     row_size = len(field[0])
     column_size = len(field)
     is_1 = lambda x: x == "1"
+
+    def ships_amount_check(ship_coords: list) -> bool:
+        """
+        this function is define type of ship,delete this ship from dict
+        named "requirement_ships" and checks,if there more ships,than needed
+        :param ship_coords:
+        :return bull value:
+        """
+        return True
 
     def is_other_ship_around(ship_coords: list, row_size: int, column_size: int, field: list) -> bool:
         """searching if any ship is close to our"""
@@ -44,5 +54,9 @@ def validate_battlefield(field: list):
 
     for x in range(column_size):
         for y in range(row_size):
-            pass
+            if is_1(field[x][y]) and (x, y) not in added_coordinates:
+                ship_coordinates = setting_ship_coords(x, y, row_size, column_size, field)
+                if is_other_ship_around(ship_coordinates, row_size, column_size, field):
+                    return False
+
     return True
