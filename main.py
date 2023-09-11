@@ -11,7 +11,6 @@ def validate_battlefield(field: list):
 
     ship_length = {4: "single", 3: "cruiser", 2: "destroyer", 1: "submarine"}
     requirement_ships = {"submarine": 4, "destroyer": 3, "cruiser": 2, "single": 1}
-    ship_size_counter = 0
     added_coordinates = set()
     row_size = len(field[0])
     column_size = len(field)
@@ -24,6 +23,14 @@ def validate_battlefield(field: list):
         :param ship_coords:
         :return bull value:
         """
+        if len(ship_coords) > 4:
+            return False
+        ship = ship_length[len(ship_coords)]
+        if ship not in requirement_ships:
+            return False
+        requirement_ships[ship] -= 1
+        if requirement_ships[ship] == 0:
+            requirement_ships.pop(ship)
         return True
 
     def is_other_ship_around(ship_coords: list, row_size: int, column_size: int, field: list) -> bool:
@@ -58,5 +65,6 @@ def validate_battlefield(field: list):
                 ship_coordinates = setting_ship_coords(x, y, row_size, column_size, field)
                 if is_other_ship_around(ship_coordinates, row_size, column_size, field):
                     return False
-
+                if not ships_amount_check(ship_coordinates):
+                    return False
     return True
