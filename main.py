@@ -14,7 +14,8 @@ def validate_battlefield(field: list):
     added_coordinates = set()
     row_size = len(field[0])
     column_size = len(field)
-    is_1 = lambda x: x == "1"
+    validation_message = "Your field has passed validation!!!"
+    is_1 = lambda x: x == 1
 
     def ships_amount_check(ship_coords: list) -> bool:
         """
@@ -23,19 +24,33 @@ def validate_battlefield(field: list):
         :param ship_coords:
         :return bull value:
         """
+
+        nonlocal validation_message
+
         if len(ship_coords) > 4:
+            validation_message = f"oops,your ship on {ship_coords} is too big"
             return False
+
         ship = ship_length[len(ship_coords)]
         if ship not in requirement_ships:
+            validation_message = f"oops,there is too much ships {ship} type"
             return False
+
         requirement_ships[ship] -= 1
         if requirement_ships[ship] == 0:
             requirement_ships.pop(ship)
         return True
 
-    def is_other_ship_around(ship_coords: list, row_size: int, column_size: int, field: list) -> bool:
+    def is_other_ship_around(ship_coords: List[tuple], field: list) -> bool:
         """searching if any ship is close to our"""
-
+        for x, y in ship_coords:
+            try:
+                if is_1(field[x + 1][y - 1]):
+                    return True
+            except IndexError:
+                if is_1(field[x - 1][y - 1]):
+                    return True
+                continue
         return False
 
     def setting_ship_coords(x: int, y: int, row_size: int, column_size: int, field: list) -> List[tuple]:
@@ -63,8 +78,23 @@ def validate_battlefield(field: list):
         for y in range(row_size):
             if is_1(field[x][y]) and (x, y) not in added_coordinates:
                 ship_coordinates = setting_ship_coords(x, y, row_size, column_size, field)
-                if is_other_ship_around(ship_coordinates, row_size, column_size, field):
-                    return False
+                if is_other_ship_around(ship_coordinates, field):
+                    validation_message = f"oops, there is other ship around {ship_coordinates} coords"
+                    return False, validation_message
                 if not ships_amount_check(ship_coordinates):
-                    return False
-    return True
+                    return False, validation_message
+    return True, validation_message
+
+
+battleField = [[1, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+               [1, 0, 1, 0, 0, 0, 0, 0, 1, 0],
+               [1, 0, 1, 0, 1, 1, 1, 0, 1, 0],
+               [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+               [0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+
+print(validate_battlefield(battleField))
