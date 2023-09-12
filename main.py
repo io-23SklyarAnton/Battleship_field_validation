@@ -83,6 +83,9 @@ def validate_battlefield(field: list):
                     return False, validation_message
                 if not ships_amount_check(ship_coordinates):
                     return False, validation_message
+    if requirement_ships:
+        validation_message = f"oops,some ships are missing {requirement_ships}"
+        return False, validation_message
     return True, validation_message
 
 
