@@ -44,13 +44,10 @@ def validate_battlefield(field: list):
     def is_other_ship_around(ship_coords: List[tuple], field: list) -> bool:
         """searching if any ship is close to our"""
         for x, y in ship_coords:
-            try:
-                if is_1(field[x + 1][y - 1]):
-                    return True
-            except IndexError:
-                if is_1(field[x - 1][y - 1]):
-                    return True
-                continue
+            if x and y and is_1(field[x - 1][y - 1]):
+                return True
+            if x < (len(field) - 1) and y and is_1(field[x + 1][y - 1]):
+                return True
         return False
 
     def setting_ship_coords(x: int, y: int, row_size: int, column_size: int, field: list) -> List[tuple]:
@@ -61,14 +58,13 @@ def validate_battlefield(field: list):
         """
         ship_coords = [(x, y)]
         ship_is_vertical = True
-        if x != row_size:
-            while is_1(field[x + 1][y]):
-                x += 1
-                ship_coords.append((x, y))
-                added_coordinates.add((x, y))
-                ship_is_vertical = False
-        if y != column_size and ship_is_vertical:
-            while is_1(field[x][y + 1]):
+        while x != column_size - 1 and is_1(field[x + 1][y]):
+            x += 1
+            ship_coords.append((x, y))
+            added_coordinates.add((x, y))
+            ship_is_vertical = False
+        if ship_is_vertical:
+            while y != (row_size - 1) and is_1(field[x][y + 1]):
                 y += 1
                 ship_coords.append((x, y))
                 added_coordinates.add((x, y))
@@ -89,15 +85,15 @@ def validate_battlefield(field: list):
     return True, validation_message
 
 
-battleField = [[1, 0, 0, 0, 0, 1, 1, 0, 0, 0],
-               [1, 0, 1, 0, 0, 0, 0, 0, 1, 0],
-               [1, 0, 1, 0, 1, 1, 1, 0, 1, 0],
+battleField = [[0, 0, 0, 0, 1, 1, 1, 1, 0, 0],
                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-               [0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+               [1, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+               [1, 0, 0, 0, 1, 1, 0, 0, 0, 0],
+               [0, 1, 0, 0, 0, 0, 0, 1, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+               [1, 0, 1, 0, 0, 0, 0, 1, 0, 0],
+               [0, 0, 1, 0, 0, 0, 0, 1, 0, 0]]
 
 print(validate_battlefield(battleField))
